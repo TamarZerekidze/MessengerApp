@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "237801336198",
+    "firebase_url": "https://messenger-app-tzdg-default-rtdb.firebaseio.com",
+    "project_id": "messenger-app-tzdg",
+    "storage_bucket": "messenger-app-tzdg.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237801336198:android:89aa25097ceb19cff95007",
+        "android_client_info": {
+          "package_name": "com.tzere21.messengerapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJjdfQAKaTEGy_jEzGnchbiOPzNxdzDcg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
