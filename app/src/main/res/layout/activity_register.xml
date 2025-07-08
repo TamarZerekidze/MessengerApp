@@ -19,6 +19,7 @@
             android:layout_width="@dimen/size_200"
             android:layout_height="@dimen/size_200"
             android:layout_marginBottom="@dimen/size_16"
+            android:contentDescription="@string/avatar"
             android:src="@drawable/avatar_image_placeholder"
             android:background="@null" />
 
@@ -28,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_16"
             android:layout_marginBottom="@dimen/size_16"
+            android:autofillHints=""
             android:hint="@string/enter_nickname"
             android:inputType="text"
             android:gravity="center"
@@ -43,6 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/size_16"
             android:layout_marginHorizontal="@dimen/size_16"
+            android:autofillHints=""
             android:hint="@string/enter_password"
             android:inputType="textPassword"
             android:gravity="center"
@@ -57,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_8"
             android:layout_marginHorizontal="@dimen/size_16"
+            android:autofillHints=""
             android:hint="@string/what_i_do"
             android:inputType="text"
             android:gravity="center"
