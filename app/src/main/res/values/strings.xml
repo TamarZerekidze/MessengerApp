@@ -14,7 +14,10 @@
     <string name="sign_up">SIGN UP</string>
     <string name="what_i_do">What I do</string>
     <string name="welcome_to_messenger">Welcome to Messenger!</string>
-    <string name="loading_user_info">Loading user info...</string>
+    <string name="loading_user_info">Loading user info</string>
     <string name="logout">Logout</string>
     <string name="avatar">avatar</string>
+    <string name="search">Search</string>
+    <string name="no_conversations_yet">No conversations yet</string>
+    <string name="tap_to_start_a_new_conversation">Tap + to start a new conversation</string>
 </resources>
