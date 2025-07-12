@@ -55,6 +55,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.play.services.cast.framework)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

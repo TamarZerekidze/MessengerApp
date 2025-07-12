@@ -14,9 +14,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.tzere21.messengerapp.R
-import com.tzere21.messengerapp.databinding.ActivityMainBinding
 import com.tzere21.messengerapp.databinding.ActivityRegisterBinding
 import com.tzere21.messengerapp.domain.User
+import java.util.UUID
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -63,7 +63,8 @@ class RegisterActivity : AppCompatActivity() {
                 return@checkNicknameExists
             }
 
-            val email = "$nickname@messenger.app"
+            val uid = UUID.randomUUID()
+            val email = "$uid@messenger.app"
 
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
@@ -72,7 +73,8 @@ class RegisterActivity : AppCompatActivity() {
                             uid = auth.currentUser?.uid ?: "",
                             nickname = nickname,
                             email = email,
-                            profession = profession
+                            profession = profession,
+                            photoUrl = "https://www.computerhope.com/jargon/g/guest-user.png"
                         )
 
                         saveUserToDatabase(user)

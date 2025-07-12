@@ -30,7 +30,7 @@
             android:layout_marginTop="@dimen/size_16"
             android:layout_marginBottom="@dimen/size_16"
             android:autofillHints=""
-            android:hint="@string/enter_nickname"
+            android:hint="@string/enter_your_nickname"
             android:inputType="text"
             android:gravity="center"
             android:background="@drawable/entries"

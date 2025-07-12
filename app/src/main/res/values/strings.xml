@@ -7,7 +7,7 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="enter_nickname">Enter your nickname</string>
+    <string name="enter_your_nickname">Enter your nickname</string>
     <string name="enter_password">Enter your password</string>
     <string name="not_registered">Not registered?</string>
     <string name="sign_in">SIGN IN</string>
@@ -20,4 +20,12 @@
     <string name="search">Search</string>
     <string name="no_conversations_yet">No conversations yet</string>
     <string name="tap_to_start_a_new_conversation">Tap + to start a new conversation</string>
+    <string name="update">Update</string>
+    <string name="sign_out">SIGN OUT</string>
+    <string name="profileImage">profileImage</string>
+    <string name="enter_nickname">Enter nickname</string>
+    <string name="home">home</string>
+    <string name="settings">settings</string>
+    <string name="background">background</string>
+    <string name="add_button">add_button</string>
 </resources>

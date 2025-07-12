@@ -2,6 +2,7 @@ package com.tzere21.messengerapp.presentation
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -14,7 +15,7 @@ import com.google.firebase.database.database
 import com.tzere21.messengerapp.MainActivity
 import com.tzere21.messengerapp.R
 import com.tzere21.messengerapp.databinding.ActivityAuthBinding
-import com.tzere21.messengerapp.databinding.ActivityMainBinding
+import com.tzere21.messengerapp.domain.User
 
 class AuthActivity : AppCompatActivity() {
 
@@ -55,7 +56,6 @@ class AuthActivity : AppCompatActivity() {
     private fun signIn() {
         val nickname = binding.editTextNick.text.toString().trim()
         val password = binding.editTextPassword.text.toString().trim()
-        val email = "$nickname@messenger.app"
         if (nickname.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
@@ -63,17 +63,40 @@ class AuthActivity : AppCompatActivity() {
 
         showLoading(true)
 
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                showLoading(false)
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+        database.getReference("users").orderByChild("nickname").equalTo(nickname)
+            .get()
+            .addOnSuccessListener { snapshot ->
+
+                if (snapshot.exists()) {
+                    val userSnapshot = snapshot.children.firstOrNull()
+                    val user = userSnapshot?.getValue(User::class.java)
+
+                    user?.let { userData ->
+                        auth.signInWithEmailAndPassword(userData.email, password)
+                            .addOnCompleteListener(this) { task ->
+                                showLoading(false)
+                                if (task.isSuccessful) {
+                                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(this, MainActivity::class.java))
+                                    finish()
+                                } else {
+                                    Toast.makeText(this, "Invalid nickname or password",
+                                        Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                    } ?: run {
+                        showLoading(false)
+                        Toast.makeText(this, "User data error", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-                    Toast.makeText(this, "Login failed: ${task.exception?.message}",
-                        Toast.LENGTH_SHORT).show()
+                    showLoading(false)
+                    Toast.makeText(this, "Nickname not found", Toast.LENGTH_SHORT).show()
                 }
+            }
+            .addOnFailureListener { exception ->
+                showLoading(false)
+                Log.e("AuthActivity", "Database query failed", exception)
+                Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show()
             }
     }
 

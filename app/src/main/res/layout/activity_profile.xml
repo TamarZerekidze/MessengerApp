@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main"
+    android:fitsSystemWindows="true"
+    tools:context=".presentation.ProfileActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/size_24"
+        android:gravity="center"
+        android:background="@color/white"
+        android:layout_marginBottom="@dimen/size_64">
+
+        <FrameLayout
+            android:layout_width="@dimen/size_200"
+            android:layout_height="@dimen/size_200"
+            android:layout_marginBottom="@dimen/size_32">
+
+            <ImageView
+                android:id="@+id/imageViewProfile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/profileImage"
+                android:src="@drawable/avatar_image_placeholder"
+                android:scaleType="centerCrop"
+                android:clickable="true"
+                android:focusable="true" />
+
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/editTextNickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/size_16"
+            android:autofillHints=""
+            android:hint="@string/enter_nickname"
+            android:background="@drawable/entries"
+            android:inputType="text"
+            android:padding="@dimen/size_16"
+            android:gravity="center"
+            android:textColor="@color/text_gray"
+            android:textColorHint="@color/text_gray"
+            android:textSize="@dimen/text_24" />
+
+        <EditText
+            android:id="@+id/editTextProfession"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/size_32"
+            android:autofillHints=""
+            android:hint="@string/what_i_do"
+            android:background="@drawable/entries"
+            android:inputType="text"
+            android:padding="@dimen/size_16"
+            android:gravity="center"
+            android:textColor="@color/text_gray"
+            android:textColorHint="@color/text_gray"
+            android:textSize="@dimen/text_24" />
+
+        <Button
+            android:id="@+id/buttonUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_8"
+            android:text="@string/update"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_24"
+
+            android:paddingHorizontal="@dimen/size_30"
+            android:background="@drawable/signup_button"
+            android:foregroundTint="@color/blue"/>
+
+        <Button
+            android:id="@+id/buttonSignOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_30"
+            android:text="@string/sign_out"
+            android:textColor="@color/light_grey"
+            android:textSize="@dimen/text_24"
+            android:paddingHorizontal="@dimen/size_30"
+            android:foreground="@drawable/signup_button"
+            android:backgroundTint="@color/white"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_16"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:fabAlignmentMode="center"
+        app:fabCradleRoundedCornerRadius="@dimen/size_4"
+        app:fabCradleVerticalOffset="0dp"
+        app:fabCradleMargin="@dimen/size_4"
+        app:elevation="@dimen/size_8"
+        style="@style/Widget.MaterialComponents.BottomAppBar"
+        app:backgroundTint="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_56"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/navMessages"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless">
+
+                <ImageView
+                    android:id="@+id/iconMessages"
+                    android:layout_width="@dimen/size_24"
+                    android:layout_height="@dimen/size_24"
+                    android:contentDescription="@string/home"
+                    android:src="@drawable/ic_home"
+                    app:tint="@color/text_gray" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/navProfile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless">
+
+                <ImageView
+                    android:id="@+id/iconProfile"
+                    android:layout_width="@dimen/size_24"
+                    android:layout_height="@dimen/size_24"
+                    android:contentDescription="@string/settings"
+                    android:src="@drawable/ic_settings"
+                    app:tint="@color/blue" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabNewChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/add_button"
+        android:src="@drawable/ic_add"
+        app:fabCustomSize="@dimen/size_56"
+        app:backgroundTint="@color/blue"
+        app:tint="@color/white"
+        app:borderWidth="@dimen/size_24"
+        app:layout_anchor="@id/bottomAppBar" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
