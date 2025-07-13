@@ -125,11 +125,12 @@
         app:fabCradleMargin="@dimen/size_4"
         app:elevation="@dimen/size_8"
         style="@style/Widget.MaterialComponents.BottomAppBar"
-        app:backgroundTint="@color/white">
+        app:backgroundTint="@color/white" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_56"
+            android:layout_marginEnd="@dimen/size_16"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 

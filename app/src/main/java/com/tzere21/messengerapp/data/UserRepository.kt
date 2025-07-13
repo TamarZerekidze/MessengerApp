@@ -90,6 +90,51 @@ class UserRepository(private val context: Context) {
         }
     }
 
+    suspend fun searchUsers(query: String): Result<List<User>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val currentUser = auth.currentUser
+                val currentUid = currentUser?.uid ?: ""
+
+                val users = mutableListOf<User>()
+
+                if (query.isEmpty()) {
+                    val snapshot = database.getReference("users")
+                        .get()
+                        .await()
+
+                    snapshot.children.forEach { userSnapshot ->
+                        val user = userSnapshot.getValue<User>()
+                        user?.let {
+                            if (it.uid != currentUid) {
+                                users.add(it)
+                            }
+                        }
+                    }
+                } else {
+                    val snapshot = database.getReference("users")
+                        .get()
+                        .await()
+
+                    snapshot.children.forEach { userSnapshot ->
+                        val user = userSnapshot.getValue<User>()
+                        user?.let {
+                            if (it.uid != currentUid && it.nickname.startsWith(query)) {
+                                users.add(it)
+                            }
+                        }
+                    }
+                }
+
+                Result.success(users)
+
+            } catch (e: Exception) {
+                Log.e("UserRepository", "Error searching users", e)
+                Result.failure(e)
+            }
+        }
+    }
+
     private suspend fun saveProfilePhotoLocally(photoPath: String): Result<String> {
         return withContext(Dispatchers.IO) {
             try {

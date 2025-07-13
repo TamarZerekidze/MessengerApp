@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         checkAuthentication()
         setupRecyclerView()
         setupBottomNavigation()
-        setupFAB()
         setupSearchBar()
         loadUserConversations()
     }
@@ -88,22 +87,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigation() {
-        setSelectedTab(true)
-
-        binding.navMessages.setOnClickListener {
-            setSelectedTab(true)
-        }
-
         binding.navProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
-    }
 
-    private fun setSelectedTab(isMessages: Boolean) {
-
-    }
-
-    private fun setupFAB() {
         binding.fabNewChat.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
         }

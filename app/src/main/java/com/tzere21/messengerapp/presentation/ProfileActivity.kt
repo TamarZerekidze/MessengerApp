@@ -22,6 +22,7 @@ import java.io.File
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.tzere21.messengerapp.MainActivity
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -63,7 +64,19 @@ class ProfileActivity : AppCompatActivity() {
         binding.buttonUpdate.setOnClickListener { updateProfile() }
         binding.buttonSignOut.setOnClickListener { showLogoutDialog() }
 
-        binding.navMessages.setOnClickListener( { finish() } )
+        binding.navMessages.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
+            finish()
+        }
+
+        binding.fabNewChat.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun observeViewModel() {
@@ -96,29 +109,29 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun loadProfileImage(imageUrl: String) {
-        if (imageUrl.isNotEmpty()) {
-            if (imageUrl.startsWith("http")) {
-                Glide.with(this)
-                    .load(imageUrl)
-                    .placeholder(R.drawable.avatar_image_placeholder)
-                    .error(R.drawable.avatar_image_placeholder)
-                    .circleCrop()
-                    .into(binding.imageViewProfile)
-            } else {
-                val file = File(imageUrl)
-                if (file.exists()) {
-                    Glide.with(this)
-                        .load(file)
-                        .placeholder(R.drawable.avatar_image_placeholder)
-                        .error(R.drawable.avatar_image_placeholder)
-                        .circleCrop()
-                        .into(binding.imageViewProfile)
-                } else {
-                    binding.imageViewProfile.setImageResource(R.drawable.avatar_image_placeholder)
-                }
-            }
+        var url = imageUrl
+        if (url.isEmpty()) {
+            url = "https://www.computerhope.com/jargon/g/guest-user.png"
+        }
+        if (!url.startsWith("http") && !File(url).exists()) {
+            url = "https://www.computerhope.com/jargon/g/guest-user.png"
+        }
+
+        if (url.startsWith("http")) {
+            Glide.with(this)
+                .load(url)
+                .placeholder(R.drawable.avatar_image_placeholder)
+                .error(R.drawable.avatar_image_placeholder)
+                .circleCrop()
+                .into(binding.imageViewProfile)
         } else {
-            binding.imageViewProfile.setImageResource(R.drawable.avatar_image_placeholder)
+            val file = File(url)
+            Glide.with(this)
+                .load(file)
+                .placeholder(R.drawable.avatar_image_placeholder)
+                .error(R.drawable.avatar_image_placeholder)
+                .circleCrop()
+                .into(binding.imageViewProfile)
         }
     }
 

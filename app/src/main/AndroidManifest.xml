@@ -36,7 +36,9 @@
         <activity
             android:name=".presentation.ProfileActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".presentation.SearchActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
