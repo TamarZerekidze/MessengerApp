@@ -25,4 +25,7 @@
     <string name="add_button">add_button</string>
     <string name="back_button">back button</string>
     <string name="no_users_found">No users found</string>
+    <string name="message">Message</string>
+    <string name="send_message">Send message</string>
+    <string name="be_first_to_send_a_message">Be first to send a message!</string>
 </resources>

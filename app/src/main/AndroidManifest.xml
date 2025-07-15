@@ -40,6 +40,9 @@
             android:name=".presentation.SearchActivity"
             android:exported="false" />
         <activity
+            android:name=".presentation.ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
     </application>

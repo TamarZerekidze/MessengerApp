@@ -45,7 +45,19 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        userAdapter = UserAdapter(emptyList())
+        userAdapter = UserAdapter(
+            emptyList()
+        ) { user ->
+            val intent = Intent(this, ChatActivity::class.java).apply {
+                putExtra("USER_UID", user.uid)
+                putExtra("USER_NICKNAME", user.nickname)
+                putExtra("USER_EMAIL", user.email)
+                putExtra("USER_PROFESSION", user.profession)
+                putExtra("USER_PHOTO_URL", user.photoUrl)
+            }
+            startActivity(intent)
+            finish()
+        }
 
         binding.recyclerViewUsers.apply {
             layoutManager = LinearLayoutManager(this@SearchActivity)

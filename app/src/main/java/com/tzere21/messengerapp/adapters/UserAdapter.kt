@@ -12,6 +12,7 @@ import java.io.File
 
 class UserAdapter(
     private var users: List<User>,
+    private val onUserClick: (User) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
@@ -44,6 +45,8 @@ class UserAdapter(
             binding.textViewProfession.text = user.profession
 
             loadProfileImage(user.photoUrl)
+
+            binding.root.setOnClickListener { onUserClick(user) }
         }
 
         private fun loadProfileImage(imageUrl: String) {
