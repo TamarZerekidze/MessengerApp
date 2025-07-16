@@ -142,8 +142,6 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.isLoading.observe(this) { loading ->
             binding.loadingIndicator.visibility = if (loading) View.VISIBLE else View.GONE
-            binding.layoutEmptyState.visibility = if (loading) View.GONE else View.VISIBLE
-            binding.recyclerViewConversations.visibility = if (loading) View.GONE else View.VISIBLE
         }
 
         viewModel.error.observe(this) { errorMessage ->

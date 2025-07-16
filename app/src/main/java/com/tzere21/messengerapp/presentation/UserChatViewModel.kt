@@ -28,27 +28,32 @@ class UserChatViewModel(
     }
 
     private fun initializeUserChats() {
+        _isLoading.value = true
+        _error.value = null
+
         viewModelScope.launch {
             userChatRepository.getUserChats("")
                 .catch { exception ->
+                    _isLoading.value = false
                     _error.value = exception.message ?: "Error loading messages"
                 }
                 .collect { userChatList ->
+                    _isLoading.value = false
                     _userChats.value = userChatList
                 }
         }
     }
 
     fun searchUserChats(query: String) {
-        if (query.isNotEmpty()) {
-            _isLoading.value = true
-        }
+        _isLoading.value = true
         viewModelScope.launch {
             userChatRepository.getUserChats(query)
                 .catch { exception ->
+                    _isLoading.value = false
                     _error.value = exception.message ?: "Error loading messages"
                 }
                 .collect { userChatList ->
+                    _isLoading.value = false
                     _userChats.value = userChatList
                 }
         }

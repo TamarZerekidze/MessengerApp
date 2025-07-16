@@ -28,37 +28,30 @@ class UserChatRepository {
             return@callbackFlow
         }
 
-        val userChatList = mutableListOf<UserChat>()
+        val userChatMap = mutableMapOf<String, UserChat>()
         val listener = userChatsRef.child(currentUserId)
             .addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                     val userChat = snapshot.getValue<UserChat>()
                     userChat?.let {
-                        if (it.timestamp != 0L && it.secondUserName.startsWith(query)) {
-                            userChatList.add(it)
-                            userChatList.sortBy { chat -> -chat.timestamp }
-                            trySend(userChatList.toList())
-                        }
+                        userChatMap[it.chatId] = it
+                        emitFilteredList(userChatMap, query)
                     }
                 }
 
                 override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                     val userChat = snapshot.getValue<UserChat>()
                     userChat?.let {
-                        val index = userChatList.indexOfFirst { chat -> chat.chatId == it.chatId }
-                        if (index != -1) {
-                            userChatList[index] = it
-                            userChatList.sortBy { chat -> -chat.timestamp }
-                            trySend(userChatList.toList())
-                        }
+                        userChatMap[it.chatId] = it
+                        emitFilteredList(userChatMap, query)
                     }
                 }
 
                 override fun onChildRemoved(snapshot: DataSnapshot) {
                     val userChat = snapshot.getValue<UserChat>()
                     userChat?.let {
-                        userChatList.removeAll { chat -> chat.chatId == it.chatId }
-                        trySend(userChatList.toList())
+                        userChatMap.remove(it.chatId)
+                        emitFilteredList(userChatMap, query)
                     }
                 }
 
@@ -67,6 +60,18 @@ class UserChatRepository {
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("UserChatRepository", "Error listening to user chats", error.toException())
                     close(error.toException())
+                }
+
+                private fun emitFilteredList(chatMap: Map<String, UserChat>, searchQuery: String) {
+                    val filteredList = chatMap.values
+                        .filter { chat ->
+                            chat.timestamp != 0L &&
+                                    (searchQuery.isEmpty() ||
+                                            chat.secondUserName.startsWith(searchQuery))
+                        }
+                        .sortedByDescending { it.timestamp }
+
+                    trySend(filteredList)
                 }
             })
 
