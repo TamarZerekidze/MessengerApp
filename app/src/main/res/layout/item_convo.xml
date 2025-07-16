@@ -35,7 +35,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                tools:text="Someone" />
+                tools:text="@string/enter_nickname" />
 
             <TextView
                 android:id="@+id/textViewLastMessage"
@@ -46,7 +46,7 @@
                 android:textColor="@color/text_gray"
                 android:maxLines="1"
                 android:ellipsize="end"
-                tools:text="On my way home but I needed to..." />
+                tools:text="@string/on_my_way_home_but_i_needed_to" />
 
         </LinearLayout>
 
