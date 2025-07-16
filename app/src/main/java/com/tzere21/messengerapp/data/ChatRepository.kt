@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.database
 import com.google.firebase.database.getValue
 import com.tzere21.messengerapp.domain.Message
+import com.tzere21.messengerapp.domain.User
 import com.tzere21.messengerapp.domain.UserChat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -24,15 +25,16 @@ class ChatRepository {
     private val database = Firebase.database
     private val chatsRef = database.getReference("chats")
     private val userChatsRef = database.getReference("userChats")
+    private val usersRef = database.getReference("users")
 
-    suspend fun getChatId(otherUserId: String): Result<String> {
+    suspend fun getChatId(otherUser: User): Result<String> {
         return withContext(Dispatchers.IO) {
             try {
-                val currentUser = auth.currentUser
-                if (currentUser == null) {
+                val currentUserAuth = auth.currentUser
+                if (currentUserAuth == null) {
                     return@withContext Result.failure(Exception("Not logged in"))
                 }
-                val currentUserId = currentUser.uid
+                val currentUserId = currentUserAuth.uid
 
                 val chatsSnapshot = chatsRef.get().await()
 
@@ -42,7 +44,7 @@ class ChatRepository {
 
                     if (participants != null &&
                         participants.contains(currentUserId) &&
-                        participants.contains(otherUserId)) {
+                        participants.contains(otherUser.uid)) {
 
                         val key = chatSnapshot.key
                         if (key != null) {
@@ -53,38 +55,70 @@ class ChatRepository {
                 }
 
                 if (chatId.isEmpty()) {
-                    chatId = createNewChat(currentUserId, otherUserId)
+                    val currentUserData = getCurrentUser(currentUserId)
+                    if (currentUserData != null) {
+                        chatId = createNewChat(currentUserData, otherUser)
+                    } else {
+                        return@withContext Result.failure(Exception("Could not load current user data"))
+                    }
                 }
                 Result.success(chatId)
 
             } catch (e: Exception) {
-                Log.e("MessageRepository", "Error getting/creating chat", e)
+                Log.e("ChatRepository", "Error getting/creating chat", e)
                 Result.failure(e)
             }
         }
     }
 
-    private suspend fun createNewChat(currentUserId: String, otherUserId: String): String {
+    private suspend fun getCurrentUser(userId: String): User? {
+        return try {
+            val snapshot = usersRef.child(userId).get().await()
+            snapshot.getValue<User>()
+        } catch (e: Exception) {
+            Log.e("ChatRepository", "Error getting current user", e)
+            null
+        }
+    }
+
+    private suspend fun createNewChat(firstUser: User, secondUser: User): String {
         val chatId = chatsRef.push().key ?: throw Exception("Failed to generate chat ID")
 
         val chatData = mapOf(
             "chatId" to chatId,
-            "participants" to listOf(currentUserId, otherUserId),
+            "participants" to listOf(firstUser.uid, secondUser.uid),
             "lastMessage" to null
         )
 
-        val userChat = UserChat(
-            chatId = chatId
+        val userChatForFirst = UserChat(
+            chatId = chatId,
+            secondUserId = secondUser.uid,
+            secondUserName = secondUser.nickname,
+            secondUserEmail = secondUser.email,
+            secondUserProfession = secondUser.profession,
+            secondUserPhotoUrl = secondUser.photoUrl,
+            lastMessage = "",
+            timestamp = 0L
+        )
+        val userChatForSecond = UserChat(
+            chatId = chatId,
+            secondUserId = firstUser.uid,
+            secondUserName = firstUser.nickname,
+            secondUserEmail = firstUser.email,
+            secondUserProfession = firstUser.profession,
+            secondUserPhotoUrl = firstUser.photoUrl,
+            lastMessage = "",
+            timestamp = 0L
         )
 
         chatsRef.child(chatId).setValue(chatData).await()
-        userChatsRef.child(currentUserId).child(chatId).setValue(userChat).await()
-        userChatsRef.child(otherUserId).child(chatId).setValue(userChat).await()
+        userChatsRef.child(firstUser.uid).child(chatId).setValue(userChatForFirst).await()
+        userChatsRef.child(secondUser.uid).child(chatId).setValue(userChatForSecond).await()
 
         return chatId
     }
 
-    suspend fun sendMessage(chatId: String, receiverId: String, text: String): Result<Unit> {
+    suspend fun sendMessage(chatId: String, receiverUser: User, text: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val currentUser = auth.currentUser
@@ -101,7 +135,7 @@ class ChatRepository {
                     messageId = messageId,
                     chatId = chatId,
                     senderId = currentUserId,
-                    receiverId = receiverId,
+                    receiverId = receiverUser.uid,
                     text = text,
                     timestamp = timestamp
                 )
@@ -109,10 +143,18 @@ class ChatRepository {
                 chatsRef.child(chatId).child("messages").child(messageId).setValue(message).await()
                 chatsRef.child(chatId).child("lastMessage").setValue(message).await()
 
+                val chatSnapshot = chatsRef.child(chatId).get().await()
+                val participants = chatSnapshot.child("participants").getValue<List<String>>()
+
+                participants?.forEach { userId ->
+                    userChatsRef.child(userId).child(chatId).child("lastMessage").setValue(text).await()
+                    userChatsRef.child(userId).child(chatId).child("timestamp").setValue(timestamp).await()
+                }
+
                 Result.success(Unit)
 
             } catch (e: Exception) {
-                Log.e("MessageRepository", "Error sending message", e)
+                Log.e("ChatRepository", "Error sending message", e)
                 Result.failure(e)
             }
         }
@@ -156,7 +198,7 @@ class ChatRepository {
                 override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("MessageRepository", "Error listening to messages", error.toException())
+                    Log.e("ChatRepository", "Error listening to messages", error.toException())
                     close(error.toException())
                 }
             })

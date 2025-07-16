@@ -7,12 +7,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.tzere21.messengerapp.data.ChatRepository
 import com.tzere21.messengerapp.domain.Message
+import com.tzere21.messengerapp.domain.User
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
     private val chatRepository: ChatRepository,
-    private val otherUserId: String
+    private val otherUser: User
 ) : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
@@ -33,7 +34,7 @@ class ChatViewModel(
     private fun initializeChat() {
         _isLoading.value = true
         viewModelScope.launch {
-            val result = chatRepository.getChatId(otherUserId)
+            val result = chatRepository.getChatId(otherUser)
             _isLoading.value = false
 
             result.fold(
@@ -65,7 +66,7 @@ class ChatViewModel(
         }
 
         viewModelScope.launch {
-            val result = chatRepository.sendMessage(currentChatId, otherUserId, text.trim())
+            val result = chatRepository.sendMessage(currentChatId, otherUser, text.trim())
 
             result.fold(
                 onSuccess = {},
@@ -77,10 +78,10 @@ class ChatViewModel(
     }
 
     companion object {
-        fun create(chatRepository: ChatRepository, otherUserId: String): ViewModelProvider.Factory {
+        fun create(chatRepository: ChatRepository, otherUser: User): ViewModelProvider.Factory {
             return object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ChatViewModel(chatRepository, otherUserId) as T
+                    return ChatViewModel(chatRepository, otherUser) as T
                 }
             }
         }

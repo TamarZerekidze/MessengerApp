@@ -41,7 +41,7 @@ class ChatActivity : AppCompatActivity() {
             this,
             ChatViewModel.create(
                 ChatRepository(),
-                user.uid)
+                user)
         )[ChatViewModel::class.java]
 
         setupToolbar()

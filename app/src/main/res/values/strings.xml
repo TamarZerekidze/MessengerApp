@@ -29,5 +29,6 @@
     <string name="send_message">Send message</string>
     <string name="be_first_to_send_a_message">Be first to send a message!</string>
     <string name="_00_00">00:00</string>
-    <string name="on_my_way_home_but_i_needed_to">On my way home but I needed to…</string>
+    <string name="on_my_way_home_but_i_needed_to">On my way home but I needed to stop by the book store to</string>
+    <string name="_15_min">15 min</string>
 </resources>

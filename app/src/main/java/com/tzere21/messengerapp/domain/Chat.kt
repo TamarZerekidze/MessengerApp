@@ -10,5 +10,12 @@ data class Message(
 )
 
 data class UserChat(
-    val chatId: String = ""
+    val chatId: String = "",
+    val secondUserId: String = "",
+    val secondUserName: String = "",
+    val secondUserEmail: String = "",
+    val secondUserProfession: String = "",
+    val secondUserPhotoUrl: String = "",
+    val lastMessage: String = "",
+    val timestamp: Long = 0L
 )

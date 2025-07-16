@@ -3,6 +3,8 @@ package com.tzere21.messengerapp
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -12,6 +14,7 @@ import com.google.firebase.database.database
 import com.tzere21.messengerapp.databinding.ActivityMainBinding
 import com.tzere21.messengerapp.presentation.AuthActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,8 +22,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.tzere21.messengerapp.adapters.ConversationAdapter
+import com.tzere21.messengerapp.data.UserChatRepository
+import com.tzere21.messengerapp.presentation.ChatActivity
 import com.tzere21.messengerapp.presentation.ProfileActivity
 import com.tzere21.messengerapp.presentation.SearchActivity
+import com.tzere21.messengerapp.presentation.UserChatViewModel
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,6 +35,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var conversationAdapter: ConversationAdapter
     private val auth = Firebase.auth
     private val database = Firebase.database
+
+    private val viewModel: UserChatViewModel by viewModels {
+        UserChatViewModel.create(UserChatRepository())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
         setupBottomNavigation()
         setupSearchBar()
-        loadUserConversations()
+        observeViewModel()
     }
     private fun checkAuthentication() {
         val currentUser = auth.currentUser
@@ -75,9 +85,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        conversationAdapter = ConversationAdapter(emptyList()) { conversation ->
-            // TODO: Open chat activity
-            Toast.makeText(this, "Open chat with ${conversation.userName}", Toast.LENGTH_SHORT).show()
+        conversationAdapter = ConversationAdapter(
+            emptyList()
+        ) { conversation ->
+            val intent = Intent(this, ChatActivity::class.java).apply {
+                putExtra("USER_UID", conversation.secondUserId)
+                putExtra("USER_NICKNAME", conversation.secondUserName)
+                putExtra("USER_EMAIL", conversation.secondUserEmail)
+                putExtra("USER_PROFESSION", conversation.secondUserProfession)
+                putExtra("USER_PHOTO_URL", conversation.secondUserPhotoUrl)
+            }
+            startActivity(intent)
         }
 
         binding.recyclerViewConversations.apply {
@@ -97,17 +115,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSearchBar() {
-        binding.editTextSearch.setOnClickListener {
-            Toast.makeText(this, "Search filtering coming soon!", Toast.LENGTH_SHORT).show()
+        binding.editTextSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val query = s?.toString() ?: ""
+                viewModel.searchUserChats(query)
+            }
+        })
+    }
+
+    private fun observeViewModel() {
+        viewModel.userChats.observe(this) { userChats ->
+            conversationAdapter.updateConversations(userChats)
+
+            if (userChats.isEmpty()) {
+                binding.layoutEmptyState.visibility = View.VISIBLE
+                binding.recyclerViewConversations.visibility = View.GONE
+            } else {
+                binding.layoutEmptyState.visibility = View.GONE
+                binding.recyclerViewConversations.visibility = View.VISIBLE
+            }
         }
-    }
 
-    private fun loadUserConversations() {
-        showEmptyState()
-    }
+        viewModel.isLoading.observe(this) { loading ->
+            binding.loadingIndicator.visibility = if (loading) View.VISIBLE else View.GONE
+            binding.layoutEmptyState.visibility = if (loading) View.GONE else View.VISIBLE
+            binding.recyclerViewConversations.visibility = if (loading) View.GONE else View.VISIBLE
+        }
 
-    private fun showEmptyState() {
-        binding.layoutEmptyState.visibility = View.VISIBLE
-        binding.recyclerViewConversations.visibility = View.GONE
+        viewModel.error.observe(this) { errorMessage ->
+            errorMessage?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

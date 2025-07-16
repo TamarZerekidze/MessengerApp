@@ -14,24 +14,20 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@color/white"
-        app:layout_anchor="@+id/fabNewChat"
-        app:layout_anchorGravity="center"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="@dimen/size_16">
+            android:orientation="vertical" >
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewConversations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/size_16"
                 android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_convo" />
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/layoutEmptyState"
@@ -40,15 +36,7 @@
                 android:layout_marginTop="@dimen/size_64"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/size_8"
-                    android:text="@string/no_conversations_yet"
-                    android:textColor="@color/text_gray"
-                    android:textSize="@dimen/text_18" />
+                android:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -58,6 +46,17 @@
                     android:textSize="@dimen/text_18" />
 
             </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/loadingIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                app:layout_constraintTop_toBottomOf="@id/toolbar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="gone" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -1,63 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="4dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:foreground="?attr/selectableItemBackground"
+    android:paddingTop="@dimen/size_24">
+
+    <ImageView
+        android:id="@+id/imageViewAvatar"
+        android:layout_width="@dimen/size_56"
+        android:layout_height="@dimen/size_56"
+        android:layout_marginEnd="16dp"
+        android:background="@null"
+        android:contentDescription="@string/profileImage"
+        android:src="@drawable/avatar_image_placeholder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/size_16"
+        android:layout_marginTop="@dimen/size_4"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/nickname"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
-
-        <ImageView
-            android:id="@+id/imageViewAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="16dp"
-            android:background="@null"
-            android:src="@drawable/avatar_image_placeholder" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textViewUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                tools:text="@string/enter_nickname" />
-
-            <TextView
-                android:id="@+id/textViewLastMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="14sp"
-                android:textColor="@color/text_gray"
-                android:maxLines="1"
-                android:ellipsize="end"
-                tools:text="@string/on_my_way_home_but_i_needed_to" />
-
-        </LinearLayout>
+        app:layout_constraintStart_toEndOf="@id/imageViewAvatar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/textViewTime"
+        android:layout_marginStart="@dimen/size_16">
 
         <TextView
-            android:id="@+id/textViewTime"
+            android:id="@+id/textViewUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/text_gray"
-            tools:text="15 min" />
+            android:textSize="@dimen/size_20sp"
+            android:textColor="@color/black"
+            android:paddingTop="@dimen/size_4"
+            android:text="@string/enter_nickname" />
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/textViewTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/size_16sp"
+        android:textColor="@color/text_gray"
+        android:text="@string/_15_min"
+        android:layout_marginStart="@dimen/size_16"
+        android:layout_marginEnd="@dimen/size_16"
+        app:layout_constraintStart_toEndOf="@id/nickname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/nickname"
+        app:layout_constraintTop_toBottomOf="@id/nickname"
+        app:layout_constraintEnd_toEndOf="@id/nickname"
+        android:layout_marginTop="@dimen/size_4">
+
+        <TextView
+            android:id="@+id/lastMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_16sp"
+            android:textColor="@color/text_gray"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:paddingTop="@dimen/size_4"
+            android:text="@string/on_my_way_home_but_i_needed_to" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
