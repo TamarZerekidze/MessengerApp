@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.tzere21.messengerapp.data.UserChatRepository
 import com.tzere21.messengerapp.domain.UserChat
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class UserChatViewModel(
@@ -33,6 +35,15 @@ class UserChatViewModel(
 
         viewModelScope.launch {
             userChatRepository.getUserChats("")
+                .onStart {
+                    launch {
+                        delay(2000)
+                        if (_isLoading.value == true) {
+                            _isLoading.value = false
+                            _userChats.value = emptyList()
+                        }
+                    }
+                }
                 .catch { exception ->
                     _isLoading.value = false
                     _error.value = exception.message ?: "Error loading messages"
@@ -48,6 +59,15 @@ class UserChatViewModel(
         _isLoading.value = true
         viewModelScope.launch {
             userChatRepository.getUserChats(query)
+                .onStart {
+                    launch {
+                        delay(2000)
+                        if (_isLoading.value == true) {
+                            _isLoading.value = false
+                            _userChats.value = emptyList()
+                        }
+                    }
+                }
                 .catch { exception ->
                     _isLoading.value = false
                     _error.value = exception.message ?: "Error loading messages"

@@ -16,6 +16,7 @@ import com.tzere21.messengerapp.presentation.AuthActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.DataSnapshot
@@ -48,6 +49,11 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            
+            // Apply bottom padding to the scrollable content only
+            val scrollView = findViewById<androidx.core.widget.NestedScrollView>(R.id.scrollView)
+            scrollView?.setPadding(0, 0, 0, systemBars.bottom)
+            
             insets
         }
         checkAuthentication()
@@ -115,6 +121,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (verticalOffset == 0) {
+                binding.bottomAppBar.performShow()
                 binding.toolbar.visibility = View.GONE
                 binding.fancyBackground.visibility = View.VISIBLE
                 binding.editTextSearch.visibility = View.VISIBLE
@@ -123,6 +130,7 @@ class MainActivity : AppCompatActivity() {
                 binding.fancyBackground.visibility = View.GONE
                 binding.editTextSearch.visibility = View.GONE
             } else {
+                binding.bottomAppBar.performHide()
                 binding.toolbar.visibility = View.GONE
                 binding.fancyBackground.visibility = View.VISIBLE
                 binding.editTextSearch.visibility = View.VISIBLE

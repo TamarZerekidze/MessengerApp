@@ -19,12 +19,14 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 import androidx.core.net.toUri
+import com.tzere21.messengerapp.domain.UserChat
 
 class UserRepository(private val context: Context) {
 
     private val auth = Firebase.auth
     private val database = Firebase.database
     private val usersRef = database.getReference("users")
+    private val userChatsRef = database.getReference("userChats")
 
     fun getCurrentUserProfile(): Flow<User?> = callbackFlow {
         val currentUser = auth.currentUser
@@ -56,6 +58,7 @@ class UserRepository(private val context: Context) {
                 val currentUser = auth.currentUser ?: return@withContext Result.failure(Exception("No user logged in"))
 
                 val currentProfile = getCurrentUserProfileOnce()
+
                 val currentNickname = currentProfile?.nickname ?: ""
 
                 if (currentNickname != nickname) {
@@ -81,6 +84,28 @@ class UserRepository(private val context: Context) {
                 )
 
                 usersRef.child(currentUser.uid).updateChildren(updates).await()
+
+                val userChatsSnapshot = userChatsRef.get().await()
+
+                userChatsSnapshot.children.forEach { chatSnapshotList ->
+                    chatSnapshotList.children.forEach { chatSnapshot ->
+                        val userChat = chatSnapshot.getValue<UserChat>()
+                        val secondUserId = userChat?.secondUserId
+                        if (secondUserId == currentUser.uid) {
+                            val chatUpdates = mapOf(
+                                "secondUserName" to nickname,
+                                "secondUserProfession" to profession,
+                                "secondUserPhotoUrl" to photoUrl
+                            )
+                            userChatsRef
+                                .child(chatSnapshotList.key!!)
+                                .child(chatSnapshot.key!!)
+                                .updateChildren(chatUpdates)
+                                .await()
+                        }
+                    }
+                }
+
                 Result.success(Unit)
 
             } catch (e: Exception) {

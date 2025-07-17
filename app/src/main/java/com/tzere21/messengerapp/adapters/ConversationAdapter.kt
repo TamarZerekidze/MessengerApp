@@ -89,7 +89,7 @@ class ConversationAdapter(
             return when {
                 diff < 60 -> "$diff min"
                 diff < 2 * 60 -> "1 hour"
-                diff < 24 * 60 -> "$(diff / 60) hours"
+                diff < 24 * 60 -> "${(diff / 60)} hours"
                 else -> {
                     val sdf = SimpleDateFormat("dd MMM", Locale.getDefault())
                     sdf.format(Date(timestamp))
