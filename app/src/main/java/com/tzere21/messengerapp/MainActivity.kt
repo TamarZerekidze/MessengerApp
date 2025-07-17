@@ -112,10 +112,36 @@ class MainActivity : AppCompatActivity() {
         binding.fabNewChat.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
         }
+
+        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (verticalOffset == 0) {
+                binding.toolbar.visibility = View.GONE
+                binding.fancyBackground.visibility = View.VISIBLE
+                binding.editTextSearch.visibility = View.VISIBLE
+            } else if (verticalOffset == -appBarLayout.totalScrollRange) {
+                binding.toolbar.visibility = View.VISIBLE
+                binding.fancyBackground.visibility = View.GONE
+                binding.editTextSearch.visibility = View.GONE
+            } else {
+                binding.toolbar.visibility = View.GONE
+                binding.fancyBackground.visibility = View.VISIBLE
+                binding.editTextSearch.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun setupSearchBar() {
         binding.editTextSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val query = s?.toString() ?: ""
+                viewModel.searchUserChats(query)
+            }
+        })
+        binding.editTextSearchCollapsed.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}

@@ -63,6 +63,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_200">
 
@@ -70,6 +71,7 @@
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:minHeight="@dimen/size_100"
             android:background="@color/backgr_purple"
             app:collapsedTitleTextColor="@color/white"
             app:contentScrim="@color/backgr_purple"
@@ -78,6 +80,7 @@
             app:titleCollapseMode="scale">
 
             <ImageView
+                android:id="@+id/fancyBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/background"
@@ -91,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/size_16"
                 android:layout_marginEnd="@dimen/size_16"
-                android:layout_marginBottom="@dimen/size_32"
+                android:layout_marginBottom="@dimen/size_16"
                 android:layout_gravity="bottom"
                 android:autofillHints=""
                 android:background="@drawable/search_background"
@@ -108,8 +111,28 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin" />
+                android:layout_height="@dimen/size_100"
+                app:layout_collapseMode="pin" >
+
+                <EditText
+                    android:id="@+id/editTextSearchCollapsed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_16"
+                    android:layout_marginEnd="@dimen/size_16"
+                    android:layout_marginBottom="@dimen/size_16"
+                    android:layout_gravity="bottom"
+                    android:autofillHints=""
+                    android:background="@drawable/search_background"
+                    android:hint="@string/search"
+                    android:inputType="text"
+                    android:padding="@dimen/size_16"
+                    android:alpha="0.7"
+                    android:textColor="@color/text_gray"
+                    android:textColorHint="@color/text_gray"
+                    android:drawableStart="@drawable/baseline_search_24"
+                    android:drawablePadding="@dimen/size_10" />
+            </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

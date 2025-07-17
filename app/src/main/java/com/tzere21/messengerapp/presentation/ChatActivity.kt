@@ -55,7 +55,21 @@ class ChatActivity : AppCompatActivity() {
 
         binding.userNickname.text = user.nickname
         binding.userProfession.text = user.profession
+
+        binding.userNicknameCollapsed.text = user.nickname
+        binding.userProfessionCollapsed.text = user.profession
+
         loadProfileImage(user.photoUrl)
+
+        binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (verticalOffset == -appBarLayout.totalScrollRange) {
+                binding.toolbar.visibility = View.VISIBLE
+                binding.extendedToolbar.visibility = View.GONE
+            } else {
+                binding.toolbar.visibility = View.GONE
+                binding.extendedToolbar.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -72,6 +86,12 @@ class ChatActivity : AppCompatActivity() {
 
     private fun setupClickListeners() {
         binding.buttonBack.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
+            finish()
+        }
+        binding.buttonBackCollapsed.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
@@ -130,6 +150,12 @@ class ChatActivity : AppCompatActivity() {
                 .error(R.drawable.avatar_image_placeholder)
                 .circleCrop()
                 .into(binding.userAvatar)
+            Glide.with(binding.root.context)
+                .load(url)
+                .placeholder(R.drawable.avatar_image_placeholder)
+                .error(R.drawable.avatar_image_placeholder)
+                .circleCrop()
+                .into(binding.userAvatarCollapsed)
         } else {
             val file = File(url)
             Glide.with(binding.root.context)
@@ -138,6 +164,12 @@ class ChatActivity : AppCompatActivity() {
                 .error(R.drawable.avatar_image_placeholder)
                 .circleCrop()
                 .into(binding.userAvatar)
+            Glide.with(binding.root.context)
+                .load(file)
+                .placeholder(R.drawable.avatar_image_placeholder)
+                .error(R.drawable.avatar_image_placeholder)
+                .circleCrop()
+                .into(binding.userAvatarCollapsed)
         }
     }
 }
